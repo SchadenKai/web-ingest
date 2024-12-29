@@ -5,7 +5,6 @@ import { Loader2, Copy, Download } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { ScrollArea } from "@/components/ui/scroll-area"
 import { API_SERVER } from "@/constants/configs"
 
 export function Scraper() {
