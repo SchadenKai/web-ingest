@@ -9,6 +9,9 @@ router = APIRouter()
 class WebScrapeRequest(BaseModel):
     web_url: str
 
+class WebScrapeResponse(BaseModel):
+    content: str
+
 def remove_file(file_path: str):
     if os.path.exists(file_path):
         os.remove(file_path)
@@ -22,5 +25,13 @@ async def web_scrape(request: WebScrapeRequest, background_tasks: BackgroundTask
             file.write(text)
         background_tasks.add_task(remove_file, file_path)
         return FileResponse(file_path, media_type='application/octet-stream', filename="scraped_content.txt")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+@router.post("/web_scrape/v2")
+async def web_scrape(request: WebScrapeRequest) -> WebScrapeResponse:
+    try:
+        text = scrape_website(request.web_url)
+        return {"content": text}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
