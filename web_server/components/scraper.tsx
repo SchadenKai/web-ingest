@@ -1,56 +1,59 @@
-'use client'
+"use client";
 
-import { useState } from "react"
-import { Loader2, Copy, Download } from 'lucide-react'
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { API_SERVER } from "@/constants/configs"
+import { useState } from "react";
+import { Loader2, Copy, Download } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { API_SERVER } from "@/constants/configs";
 
 export function Scraper() {
-  const [url, setUrl] = useState("")
-  const [loading, setLoading] = useState(false)
+  const [url, setUrl] = useState("");
+  const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<{
-    content: string
-  } | null>(null)
+    content: string;
+  } | null>(null);
 
   async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    setLoading(true)
+    e.preventDefault();
+    setLoading(true);
     try {
       const response = await fetch(`${API_SERVER}/web_scrape/v2`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ 
-          web_url: url
-         }),
-      })
-      const data = await response.json()
-      setResult(data)
+        body: JSON.stringify({
+          web_url: url,
+        }),
+      });
+      const data = await response.json();
+      setResult(data);
     } catch (error) {
-      console.error("Error scraping website:", error)
+      console.error("Error scraping website:", error);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
   function downloadTxt() {
-    if (!result) return
-    const element = document.createElement("a")
-    const file = new Blob([result.content], { type: "text/plain" })
-    element.href = URL.createObjectURL(file)
-    element.download = "scraped-content.txt"
-    document.body.appendChild(element)
-    element.click()
-    document.body.removeChild(element)
+    if (!result) return;
+    const element = document.createElement("a");
+    const file = new Blob([result.content], { type: "text/plain" });
+    element.href = URL.createObjectURL(file);
+    element.download = "scraped-content.txt";
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
   }
 
   return (
-    <div className="flex flex-col max-w-screen-xl w-full gap-6">
-      <Card className="border-2">
-        <CardContent className="pt-6">
+    <div className="flex flex-col max-w-screen-lg w-full gap-6">
+      <Card className="w-full bg-orange-50">
+        <CardHeader>
+          <CardTitle>Enter Web URL</CardTitle>
+        </CardHeader>
+        <CardContent className="pt-3">
           <form onSubmit={handleSubmit} className="flex gap-4">
             <Input
               type="url"
@@ -60,7 +63,11 @@ export function Scraper() {
               className="flex-1"
               required
             />
-            <Button type="submit" className="bg-orange-500 hover:bg-orange-600" disabled={loading}>
+            <Button
+              type="submit"
+              className="bg-orange-500 hover:bg-orange-600"
+              disabled={loading}
+            >
               {loading ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
@@ -75,10 +82,10 @@ export function Scraper() {
       </Card>
 
       {result && (
-        <div className="max-w-full grid gap-6">
-          <Card className="max-w-full">
+        <div className="max-w-screen-lg grid gap-6">
+          <Card className="max-w-full bg-gray-50">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-base font-medium">Summary</CardTitle>
+              <CardTitle>Summary</CardTitle>
               <div className="flex gap-2">
                 <Button
                   variant="ghost"
@@ -98,7 +105,7 @@ export function Scraper() {
                 </Button>
               </div>
             </CardHeader>
-            <CardContent className="max-w-screen-xl">
+            <CardContent className="max-w-screen-lg pt-3">
               <div className="h-[400px] max-w-full overflow-x-auto rounded-md border bg-muted/50 p-4">
                 <pre className="text-sm max-w-full ">{result.content}</pre>
               </div>
@@ -107,6 +114,5 @@ export function Scraper() {
         </div>
       )}
     </div>
-  )
+  );
 }
-
